@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/glass_container.dart';
 import '../../../core/api/auth_service.dart';
@@ -32,12 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (result['success'] == true) {
-      // Routing will be handled by GoRouter in the next step based on role
       final role = await AuthService.getUserRole();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login successful. Role: $role')),
-        );
+        // Route to the specific role dashboard
+        context.go('/dashboard/${role ?? 'member'}');
       }
     } else {
       setState(() {
