@@ -1,3 +1,4 @@
+import '../../../shared/widgets/notification_bell.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
@@ -27,7 +28,7 @@ class _ProDashboardScreenState extends State<ProDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('PRO Workspace'), 
-        actions: [
+        actions: [ const NotificationBell(),
           IconButton(icon: const Icon(Icons.logout), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
         ],
       ),

@@ -1,3 +1,4 @@
+import '../../../shared/widgets/notification_bell.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
@@ -27,7 +28,7 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Treasurer Workspace'), 
-        actions: [
+        actions: [ const NotificationBell(),
           IconButton(icon: const Icon(Icons.logout, color: Colors.white), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
         ],
       ),

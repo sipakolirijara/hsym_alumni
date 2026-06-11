@@ -1,3 +1,4 @@
+import '../../../shared/widgets/notification_bell.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Member Dashboard', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        actions: [
+        actions: [ const NotificationBell(),
           IconButton(icon: const Icon(Icons.logout, color: Colors.white), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
         ],
       ),

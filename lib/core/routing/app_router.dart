@@ -16,6 +16,7 @@ import '../../features/secretary/screens/manage_events_screen.dart';
 import '../../features/pro/screens/manage_announcements_screen.dart';
 import '../../features/announcements/screens/announcements_screen.dart';
 import '../../features/finsec/screens/finsec_dashboard_screen.dart';
+import '../../features/notifications/screens/notifications_screen.dart';
 import 'splash_screen.dart';
 
 class AppRouter {
@@ -32,6 +33,7 @@ class AppRouter {
       GoRoute(path: '/gallery', builder: (context, state) => const GalleryScreen()),
       GoRoute(path: '/edit-profile', builder: (context, state) => EditProfileScreen(profile: state.extra as Map<String, dynamic>)),
       GoRoute(path: '/change-password', builder: (context, state) => const ChangePasswordScreen()),
+      GoRoute(path: '/notifications', builder: (context, state) => const NotificationsScreen()),
       GoRoute(path: '/announcements', builder: (context, state) => const AnnouncementsScreen()),
       GoRoute(path: '/president/directory', builder: (context, state) => const DirectoryScreen()),
       GoRoute(path: '/president/ledger', builder: (context, state) => const PresidentLedgerScreen()),
