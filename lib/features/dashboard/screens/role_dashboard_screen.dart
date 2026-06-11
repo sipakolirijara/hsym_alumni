@@ -1,3 +1,4 @@
+import '../../treasurer/screens/treasurer_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
@@ -15,6 +16,9 @@ class RoleDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Intercept the role and route to the strict module
     switch (role) {
+      case 'treasurer':
+        return const TreasurerDashboardScreen();
+
       case 'member':
         return const MemberDashboardScreen();
       

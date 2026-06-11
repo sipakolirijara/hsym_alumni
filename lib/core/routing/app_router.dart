@@ -5,6 +5,8 @@ import '../../features/finance/screens/submit_contribution_screen.dart';
 import '../../features/finance/screens/contribution_history_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
+import '../../features/treasurer/screens/verifications_screen.dart';
+import '../../features/treasurer/screens/contributions_screen.dart';
 import 'splash_screen.dart';
 
 class AppRouter {
@@ -18,6 +20,8 @@ class AppRouter {
       GoRoute(path: '/history', builder: (context, state) => const ContributionHistoryScreen()),
       GoRoute(path: '/events', builder: (context, state) => const EventsScreen()),
       GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
+      GoRoute(path: '/treasurer/verifications', builder: (context, state) => const VerificationsScreen()),
+      GoRoute(path: '/treasurer/contributions', builder: (context, state) => const ContributionsScreen()),
     ],
   );
 }
