@@ -1,3 +1,4 @@
+import '../../finsec/screens/finsec_dashboard_screen.dart';
 import '../../secretary/screens/secretary_dashboard_screen.dart';
 import '../../pro/screens/pro_dashboard_screen.dart';
 import '../../president/screens/president_dashboard_screen.dart';
@@ -23,6 +24,9 @@ class RoleDashboardScreen extends StatelessWidget {
         return const SecretaryDashboardScreen(roleTitle: 'Secretary');
       case 'asst-secretary':
         return const SecretaryDashboardScreen(roleTitle: 'Asst. Secretary');
+      case 'fin-secretary':
+        return const FinSecDashboardScreen();
+
       case 'pro':
         return const ProDashboardScreen();
 
@@ -40,6 +44,9 @@ class RoleDashboardScreen extends StatelessWidget {
         return const SecretaryDashboardScreen(roleTitle: 'Secretary');
       case 'asst-secretary':
         return const SecretaryDashboardScreen(roleTitle: 'Asst. Secretary');
+      case 'fin-secretary':
+        return const FinSecDashboardScreen();
+
       case 'pro':
         return const ProDashboardScreen();
 

@@ -54,6 +54,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
             children: [
               _buildCircularAction(context, icon: Icons.payments_outlined, title: 'Pay Dues', onTap: () => context.push('/submit-contribution')),
               _buildCircularAction(context, icon: Icons.history, title: 'History', onTap: () => context.push('/history')),
+              _buildCircularAction(context, icon: Icons.campaign, title: 'News', onTap: () => context.push('/announcements')),
               _buildCircularAction(context, icon: Icons.event, title: 'Events', onTap: () => context.push('/events')),
               _buildCircularAction(context, icon: Icons.photo_library, title: 'Gallery', onTap: () => context.push('/gallery')),
               _buildCircularAction(context, icon: Icons.person_outline, title: 'Profile', onTap: () => context.push('/profile')),
