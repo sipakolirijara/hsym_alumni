@@ -84,7 +84,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        backgroundColor: AppTheme.darkBackground,
+        backgroundColor: AppTheme.lightBackground,
         body: Center(child: CircularProgressIndicator(color: AppTheme.brandPrimary)),
       );
     }
@@ -93,7 +93,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.darkBackground,
+        backgroundColor: AppTheme.lightBackground,
         elevation: 0,
         title: const Text('Submit Payment'),
         leading: IconButton(
@@ -101,7 +101,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
           onPressed: () => context.pop(),
         ),
       ),
-      backgroundColor: AppTheme.darkBackground,
+      backgroundColor: AppTheme.lightBackground,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -132,7 +132,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _selectedMethod,
-                dropdownColor: AppTheme.darkBackground,
+                dropdownColor: AppTheme.lightBackground,
                 style: const TextStyle(color: Colors.black87),
                 decoration: const InputDecoration(
                   labelText: 'Payment Method',

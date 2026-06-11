@@ -26,8 +26,8 @@ class _ContributionsScreenState extends State<ContributionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Global Ledger'), backgroundColor: AppTheme.darkBackground),
-      backgroundColor: AppTheme.darkBackground,
+      appBar: AppBar(title: const Text('Global Ledger'), backgroundColor: AppTheme.lightBackground),
+      backgroundColor: AppTheme.lightBackground,
       body: _isLoading 
         ? const Center(child: CircularProgressIndicator(color: AppTheme.brandPrimary))
         : ListView.builder(

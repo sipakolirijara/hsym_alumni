@@ -32,8 +32,8 @@ class _ContributionHistoryScreenState extends State<ContributionHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Contributions'), backgroundColor: AppTheme.darkBackground),
-      backgroundColor: AppTheme.darkBackground,
+      appBar: AppBar(title: const Text('My Contributions'), backgroundColor: AppTheme.lightBackground),
+      backgroundColor: AppTheme.lightBackground,
       body: _isLoading 
         ? const Center(child: CircularProgressIndicator(color: AppTheme.brandPrimary))
         : ListView.builder(

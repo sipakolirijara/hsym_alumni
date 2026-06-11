@@ -37,7 +37,7 @@ class RoleDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.darkBackground,
+        backgroundColor: AppTheme.lightBackground,
         elevation: 0,
         title: Text('$displayRole DASHBOARD', style: const TextStyle(fontSize: 16)),
         actions: [
@@ -55,7 +55,7 @@ class RoleDashboardScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF1E1E1E), Color(0xFF000000)],
+            colors: [AppTheme.lightBackground, Color(0xFFE5E7EB)],
           ),
         ),
         child: Center(

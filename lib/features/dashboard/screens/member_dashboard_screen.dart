@@ -26,7 +26,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.darkBackground,
+        backgroundColor: AppTheme.lightBackground,
         title: const Text('Member Dashboard', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
@@ -35,7 +35,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
           )
         ],
       ),
-      backgroundColor: AppTheme.darkBackground,
+      backgroundColor: AppTheme.lightBackground,
       body: ListView(
         padding: const EdgeInsets.all(24.0),
         children: [

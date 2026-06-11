@@ -29,7 +29,7 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppTheme.darkBackground,
+        backgroundColor: AppTheme.lightBackground,
         title: const Text('Verify Payment', style: TextStyle(color: Colors.black87)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -73,8 +73,8 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pending Verifications'), backgroundColor: AppTheme.darkBackground),
-      backgroundColor: AppTheme.darkBackground,
+      appBar: AppBar(title: const Text('Pending Verifications'), backgroundColor: AppTheme.lightBackground),
+      backgroundColor: AppTheme.lightBackground,
       body: _isLoading 
         ? const Center(child: CircularProgressIndicator(color: AppTheme.brandPrimary))
         : ListView.builder(
