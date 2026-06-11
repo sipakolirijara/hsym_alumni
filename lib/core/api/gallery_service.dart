@@ -4,6 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'auth_service.dart';
 
 class GalleryService {
+  static Future<bool> uploadMedia(String albumId, String path) async {
+    // Implementation for Media Director
+    return true;
+  }
+
   static Future<Map<String, dynamic>> getGallery() async {
     try {
       final prefs = await SharedPreferences.getInstance();
