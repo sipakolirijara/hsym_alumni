@@ -6,7 +6,8 @@ import '../../../core/api/auth_service.dart';
 import '../../../core/api/president_service.dart';
 
 class PresidentDashboardScreen extends StatefulWidget {
-  const PresidentDashboardScreen({super.key});
+  final String roleTitle;
+  const PresidentDashboardScreen({super.key, this.roleTitle = 'President'});
   @override
   State<PresidentDashboardScreen> createState() => _PresidentDashboardScreenState();
 }
@@ -26,7 +27,7 @@ class _PresidentDashboardScreenState extends State<PresidentDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('President Workspace'), 
+        title: Text('${widget.roleTitle} Workspace'), 
         actions: [
           IconButton(icon: const Icon(Icons.logout, color: Colors.white), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
         ],

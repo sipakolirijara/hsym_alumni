@@ -1,15 +1,9 @@
-import '../../finsec/screens/finsec_dashboard_screen.dart';
+import 'package:flutter/material.dart';
+import '../../president/screens/president_dashboard_screen.dart';
 import '../../secretary/screens/secretary_dashboard_screen.dart';
 import '../../pro/screens/pro_dashboard_screen.dart';
-import '../../president/screens/president_dashboard_screen.dart';
 import '../../treasurer/screens/treasurer_dashboard_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/glass_container.dart';
-import '../../../core/api/auth_service.dart';
-
-// Import our specific role dashboards
+import '../../finsec/screens/finsec_dashboard_screen.dart';
 import 'member_dashboard_screen.dart';
 
 class RoleDashboardScreen extends StatelessWidget {
@@ -18,102 +12,36 @@ class RoleDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Intercept the role and route to the strict module
-    switch (role) {
+    switch (role.toLowerCase()) {
+      case 'president':
+        return const PresidentDashboardScreen(roleTitle: 'President');
+      case 'vice-president':
+        return const PresidentDashboardScreen(roleTitle: 'Vice President');
       case 'secretary':
         return const SecretaryDashboardScreen(roleTitle: 'Secretary');
       case 'asst-secretary':
         return const SecretaryDashboardScreen(roleTitle: 'Asst. Secretary');
-      case 'fin-secretary':
-        return const FinSecDashboardScreen();
-
       case 'pro':
         return const ProDashboardScreen();
-
-      case 'president':
-        return const PresidentDashboardScreen();
-
       case 'treasurer':
         return const TreasurerDashboardScreen();
-
-      case 'member':
-        return const MemberDashboardScreen();
-      
-      // As we build more modules (Treasurer, President, etc.), we add their cases here.
-      case 'secretary':
-        return const SecretaryDashboardScreen(roleTitle: 'Secretary');
-      case 'asst-secretary':
-        return const SecretaryDashboardScreen(roleTitle: 'Asst. Secretary');
       case 'fin-secretary':
-        return const FinSecDashboardScreen();
-
-      case 'pro':
-        return const ProDashboardScreen();
-
-      case 'president':
-        return const PresidentDashboardScreen();
-
-      // case 'treasurer':
-      //   return const TreasurerDashboardScreen();
-        
+        return const FinSecDashboardScreen(roleTitle: 'Financial Secretary');
+      case 'auditor':
+      case 'auditor-1':
+      case 'auditor-2':
+        return const FinSecDashboardScreen(roleTitle: 'Auditor');
+      case 'provost':
+        return const SecretaryDashboardScreen(roleTitle: 'Provost');
+      case 'welfare':
+      case 'welfare-officer':
+        return const SecretaryDashboardScreen(roleTitle: 'Welfare Officer');
+      case 'legal':
+      case 'legal-adviser':
+        return const SecretaryDashboardScreen(roleTitle: 'Legal Adviser');
+      case 'member':
       default:
-        return _buildFallbackDashboard(context);
+        return const MemberDashboardScreen();
     }
-  }
-
-  // Fallback for roles we haven't built dedicated screens for yet
-  Widget _buildFallbackDashboard(BuildContext context) {
-    final displayRole = role.replaceAll('-', ' ').toUpperCase();
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppTheme.lightBackground,
-        elevation: 0,
-        title: Text('$displayRole DASHBOARD', style: const TextStyle(fontSize: 16)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.redAccent),
-            onPressed: () async {
-              await AuthService.logout();
-              if (context.mounted) context.go('/login');
-            },
-          )
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppTheme.lightBackground, Color(0xFFE5E7EB)],
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: GlassContainer(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.admin_panel_settings, size: 64, color: AppTheme.brandPrimary),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Welcome to the $displayRole Workspace',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Your specific mobile UI is currently under construction.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

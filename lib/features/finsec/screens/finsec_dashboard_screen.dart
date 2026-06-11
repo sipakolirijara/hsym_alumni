@@ -6,7 +6,8 @@ import '../../../core/api/auth_service.dart';
 import '../../../core/api/finsec_service.dart';
 
 class FinSecDashboardScreen extends StatefulWidget {
-  const FinSecDashboardScreen({super.key});
+  final String roleTitle;
+  const FinSecDashboardScreen({super.key, this.roleTitle = 'Fin-Sec'});
   @override
   State<FinSecDashboardScreen> createState() => _FinSecDashboardScreenState();
 }
@@ -26,7 +27,7 @@ class _FinSecDashboardScreenState extends State<FinSecDashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fin-Sec Workspace'), 
+        title: Text('${widget.roleTitle} Workspace'), 
         actions: [
           IconButton(icon: const Icon(Icons.logout), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
         ],
