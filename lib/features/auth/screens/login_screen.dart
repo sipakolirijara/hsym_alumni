@@ -18,30 +18,14 @@ class _LoginScreenState extends State<LoginScreen> {
   String _errorMessage = '';
 
   Future<void> _handleLogin() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = '';
-    });
-
-    final result = await AuthService.login(
-      _identifierController.text.trim(),
-      _passwordController.text,
-    );
-
-    setState(() {
-      _isLoading = false;
-    });
-
+    setState(() { _isLoading = true; _errorMessage = ''; });
+    final result = await AuthService.login(_identifierController.text.trim(), _passwordController.text);
+    setState(() { _isLoading = false; });
     if (result['success'] == true) {
       final role = await AuthService.getUserRole();
-      if (mounted) {
-        // Route to the specific role dashboard
-        context.go('/dashboard/${role ?? 'member'}');
-      }
+      if (mounted) context.go('/dashboard/${role ?? 'member'}');
     } else {
-      setState(() {
-        _errorMessage = result['message'] ?? 'Login failed';
-      });
+      setState(() { _errorMessage = result['message'] ?? 'Login failed'; });
     }
   }
 
@@ -49,13 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppTheme.lightBackground, Color(0xFFE5E7EB)],
-          ),
-        ),
+        color: AppTheme.lightBackground,
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -67,61 +45,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const Icon(Icons.school, size: 64, color: AppTheme.brandPrimary),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Welcome Back',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
+                  const Text('Welcome Back', textAlign: TextAlign.center, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87)),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Enter your Member ID, Phone, or Email',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black54),
-                  ),
+                  const Text('Enter your Member ID, Phone, or Email', textAlign: TextAlign.center, style: TextStyle(color: Colors.black54)),
                   const SizedBox(height: 32),
                   TextField(
                     controller: _identifierController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black87),
                     decoration: InputDecoration(
                       labelText: 'Identifier',
-                      labelStyle: const TextStyle(color: Colors.white54),
-                      prefixIcon: const Icon(Icons.person_outline, color: Colors.white54),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: AppTheme.glassBorder),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: AppTheme.brandPrimary),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      labelStyle: const TextStyle(color: Colors.black54),
+                      prefixIcon: const Icon(Icons.person_outline, color: Colors.black54),
+                      enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: AppTheme.brandPrimary), borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black87),
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      labelStyle: const TextStyle(color: Colors.white54),
-                      prefixIcon: const Icon(Icons.lock_outline, color: Colors.white54),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: AppTheme.glassBorder),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: AppTheme.brandPrimary),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      labelStyle: const TextStyle(color: Colors.black54),
+                      prefixIcon: const Icon(Icons.lock_outline, color: Colors.black54),
+                      enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: AppTheme.brandPrimary), borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                   if (_errorMessage.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    Text(
-                      _errorMessage,
-                      style: const TextStyle(color: Colors.redAccent, fontSize: 14),
-                      textAlign: TextAlign.center,
-                    ),
+                    Text(_errorMessage, style: const TextStyle(color: Colors.redAccent, fontSize: 14), textAlign: TextAlign.center),
                   ],
                   const SizedBox(height: 32),
                   SizedBox(
@@ -129,12 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _handleLogin,
                       child: _isLoading
-                          ? const SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: CircularProgressIndicator(color: Colors.black87, strokeWidth: 2),
-                            )
-                          : const Text('Secure Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                          : const Text('Secure Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                   ),
                 ],

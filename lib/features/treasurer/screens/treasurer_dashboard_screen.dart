@@ -28,10 +28,10 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
       appBar: AppBar(
         title: const Text('Treasurer Workspace'), 
         actions: [
-          IconButton(icon: const Icon(Icons.logout, color: Colors.black87), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
+          IconButton(icon: const Icon(Icons.logout, color: Colors.white), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
         ],
       ),
-      body: _isLoading 
+      body: _isLoading
         ? const Center(child: CircularProgressIndicator(color: AppTheme.brandPrimary))
         : ListView(
             padding: const EdgeInsets.all(24),
@@ -44,26 +44,24 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              const Text('Admin Actions', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              GridView.count(
-                shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16,
+              const Text('Treasurer Actions', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 24, runSpacing: 24, alignment: WrapAlignment.start,
                 children: [
-                  _buildAction(context, Icons.verified, 'Verifications', () => context.push('/treasurer/verifications')),
-                  _buildAction(context, Icons.account_balance_wallet, 'Ledger', () => context.push('/treasurer/contributions')),
-                  _buildAction(context, Icons.photo_library, 'Gallery', () => context.push('/gallery')),
+                  _buildCircularAction(context, Icons.verified, 'Verify', () => context.push('/treasurer/verifications')),
+                  _buildCircularAction(context, Icons.account_balance_wallet, 'Ledger', () => context.push('/treasurer/contributions')),
+                  _buildCircularAction(context, Icons.photo_library, 'Gallery', () => context.push('/gallery')),
                 ],
               ),
               const SizedBox(height: 32),
               const Text('My Personal Account', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              GridView.count(
-                shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16,
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 24, runSpacing: 24, alignment: WrapAlignment.start,
                 children: [
-                  _buildAction(context, Icons.payments_outlined, 'Pay My Dues', () => context.push('/submit-contribution')),
-                  _buildAction(context, Icons.history, 'My History', () => context.push('/history')),
+                  _buildCircularAction(context, Icons.payments_outlined, 'Pay Dues', () => context.push('/submit-contribution')),
+                  _buildCircularAction(context, Icons.history, 'My History', () => context.push('/history')),
                 ],
               ),
             ],
@@ -84,15 +82,25 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
     );
   }
 
-  Widget _buildAction(BuildContext context, IconData icon, String title, VoidCallback onTap) {
+  Widget _buildCircularAction(BuildContext context, IconData icon, String title, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: GlassContainer(
+      child: SizedBox(
+        width: 72,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 40, color: AppTheme.brandPrimary), const SizedBox(height: 12),
-            Text(title, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+            Container(
+              height: 60, width: 60,
+              decoration: BoxDecoration(
+                color: Colors.white, shape: BoxShape.circle,
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+                border: Border.all(color: AppTheme.brandPrimary.withOpacity(0.2)),
+              ),
+              child: Icon(icon, size: 28, color: AppTheme.brandPrimary),
+            ),
+            const SizedBox(height: 8),
+            Text(title, textAlign: TextAlign.center, style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600)),
           ],
         ),
       ),
