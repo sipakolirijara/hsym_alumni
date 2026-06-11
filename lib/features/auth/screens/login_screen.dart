@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(Icons.school, size: 64, color: AppTheme.primaryPurple),
+                  const Icon(Icons.school, size: 64, color: AppTheme.brandPrimary),
                   const SizedBox(height: 24),
                   const Text(
                     'Welcome Back',
@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: AppTheme.primaryPurple),
+                        borderSide: const BorderSide(color: AppTheme.brandPrimary),
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: AppTheme.primaryPurple),
+                        borderSide: const BorderSide(color: AppTheme.brandPrimary),
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),

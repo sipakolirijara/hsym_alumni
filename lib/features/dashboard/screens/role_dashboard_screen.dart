@@ -43,7 +43,7 @@ class RoleDashboardScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.admin_panel_settings, size: 64, color: AppTheme.primaryPurple),
+                  const Icon(Icons.admin_panel_settings, size: 64, color: AppTheme.brandPrimary),
                   const SizedBox(height: 16),
                   Text(
                     'Welcome to the $displayRole Workspace',

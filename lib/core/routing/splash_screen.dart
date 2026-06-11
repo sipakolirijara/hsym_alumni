@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: const [
-                  Icon(Icons.school, size: 64, color: AppTheme.primaryPurple),
+                  Icon(Icons.school, size: 64, color: AppTheme.brandPrimary),
                   SizedBox(height: 24),
                   Text(
                     'GPS Alumni Connect',
@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     style: TextStyle(color: Colors.white70),
                   ),
                   SizedBox(height: 32),
-                  CircularProgressIndicator(color: AppTheme.primaryPurple),
+                  CircularProgressIndicator(color: AppTheme.brandPrimary),
                 ],
               ),
             ),
