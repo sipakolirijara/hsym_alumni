@@ -1,3 +1,4 @@
+import '../../president/screens/president_dashboard_screen.dart';
 import '../../treasurer/screens/treasurer_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,9 @@ class RoleDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Intercept the role and route to the strict module
     switch (role) {
+      case 'president':
+        return const PresidentDashboardScreen();
+
       case 'treasurer':
         return const TreasurerDashboardScreen();
 
@@ -23,6 +27,9 @@ class RoleDashboardScreen extends StatelessWidget {
         return const MemberDashboardScreen();
       
       // As we build more modules (Treasurer, President, etc.), we add their cases here.
+      case 'president':
+        return const PresidentDashboardScreen();
+
       // case 'treasurer':
       //   return const TreasurerDashboardScreen();
         

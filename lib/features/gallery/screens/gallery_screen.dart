@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/api/gallery_service.dart';
 
@@ -33,7 +33,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
             itemBuilder: (context, index) {
               final album = _albums[index];
               final photos = album['photos'] as List<dynamic>? ?? [];
-              
               return GestureDetector(
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AlbumDetailScreen(album: album, photos: photos))),
                 child: Column(
@@ -53,7 +52,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   Widget _buildStackedFolderPreview(List<dynamic> photos) {
     if (photos.isEmpty) return const Icon(Icons.folder_open, size: 80, color: Colors.black26);
-    
     return SizedBox(
       height: 100, width: 100,
       child: Stack(
@@ -71,8 +69,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
     return Container(
       width: 80, height: 80,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.white, borderRadius: BorderRadius.circular(8),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, offset: const Offset(2, 2))],
         border: Border.all(color: Colors.white, width: 3),
         image: DecorationImage(image: NetworkImage('https://alumni.recordly.ng/uploads/gallery/$path'), fit: BoxFit.cover),
@@ -86,30 +83,10 @@ class AlbumDetailScreen extends StatelessWidget {
   final List<dynamic> photos;
   const AlbumDetailScreen({super.key, required this.album, required this.photos});
 
-  void _showFullScreenImage(BuildContext context, String path) {
+  void _openFullScreen(BuildContext context, int initialIndex) {
     showDialog(
-      context: context,
-      useSafeArea: false,
-      builder: (_) => Dialog(
-        backgroundColor: Colors.black,
-        insetPadding: EdgeInsets.zero,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            InteractiveViewer(
-              panEnabled: true, minScale: 0.5, maxScale: 4.0,
-              child: Image.network('https://alumni.recordly.ng/uploads/gallery/$path', fit: BoxFit.contain),
-            ),
-            Positioned(
-              top: 40, left: 16,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 32),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ],
-        ),
-      ),
+      context: context, useSafeArea: false,
+      builder: (_) => FullScreenViewer(photos: photos, initialIndex: initialIndex),
     );
   }
 
@@ -124,18 +101,89 @@ class AlbumDetailScreen extends StatelessWidget {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 4, mainAxisSpacing: 4),
               itemCount: photos.length,
               itemBuilder: (context, index) {
-                final photo = photos[index];
                 return GestureDetector(
-                  onTap: () => _showFullScreenImage(context, photo['file_path']),
+                  onTap: () => _openFullScreen(context, index),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
-                      image: DecorationImage(image: NetworkImage('https://alumni.recordly.ng/uploads/gallery/${photo['file_path']}'), fit: BoxFit.cover),
+                      image: DecorationImage(image: NetworkImage('https://alumni.recordly.ng/uploads/gallery/${photos[index]['file_path']}'), fit: BoxFit.cover),
                     ),
                   ),
                 );
               },
             ),
+    );
+  }
+}
+
+class FullScreenViewer extends StatefulWidget {
+  final List<dynamic> photos;
+  final int initialIndex;
+  const FullScreenViewer({super.key, required this.photos, required this.initialIndex});
+  @override
+  State<FullScreenViewer> createState() => _FullScreenViewerState();
+}
+
+class _FullScreenViewerState extends State<FullScreenViewer> {
+  late PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: widget.initialIndex);
+  }
+
+  Future<void> _downloadImage() async {
+    final path = widget.photos[_currentIndex]['file_path'];
+    final url = Uri.parse('https://alumni.recordly.ng/uploads/gallery/$path');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not download image')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.black,
+      insetPadding: EdgeInsets.zero,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: widget.photos.length,
+            onPageChanged: (index) => setState(() => _currentIndex = index),
+            itemBuilder: (context, index) {
+              return InteractiveViewer(
+                panEnabled: true, minScale: 0.5, maxScale: 4.0,
+                child: Image.network('https://alumni.recordly.ng/uploads/gallery/${widget.photos[index]['file_path']}', fit: BoxFit.contain),
+              );
+            },
+          ),
+          Positioned(
+            top: 40, left: 16,
+            child: IconButton(icon: const Icon(Icons.close, color: Colors.white, size: 32), onPressed: () => Navigator.pop(context)),
+          ),
+          Positioned(
+            top: 40, right: 24,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(16)),
+              child: Text('${_currentIndex + 1} / ${widget.photos.length}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          Positioned(
+            bottom: 40, right: 24,
+            child: FloatingActionButton(
+              backgroundColor: AppTheme.brandPrimary,
+              onPressed: _downloadImage,
+              child: const Icon(Icons.download, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

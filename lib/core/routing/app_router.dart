@@ -10,6 +10,8 @@ import '../../features/treasurer/screens/contributions_screen.dart';
 import '../../features/gallery/screens/gallery_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/profile/screens/change_password_screen.dart';
+import '../../features/president/screens/directory_screen.dart';
+import '../../features/president/screens/president_ledger_screen.dart';
 import 'splash_screen.dart';
 
 class AppRouter {
@@ -26,6 +28,8 @@ class AppRouter {
       GoRoute(path: '/gallery', builder: (context, state) => const GalleryScreen()),
       GoRoute(path: '/edit-profile', builder: (context, state) => EditProfileScreen(profile: state.extra as Map<String, dynamic>)),
       GoRoute(path: '/change-password', builder: (context, state) => const ChangePasswordScreen()),
+      GoRoute(path: '/president/directory', builder: (context, state) => const DirectoryScreen()),
+      GoRoute(path: '/president/ledger', builder: (context, state) => const PresidentLedgerScreen()),
       GoRoute(path: '/treasurer/verifications', builder: (context, state) => const VerificationsScreen()),
       GoRoute(path: '/treasurer/contributions', builder: (context, state) => const ContributionsScreen()),
     ],
