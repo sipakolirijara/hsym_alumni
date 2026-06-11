@@ -1,0 +1,33 @@
+
+name: hsym_alumni
+
+description: Alumni Management System (AMS) Mobile Application
+
+publish_to: "none"
+
+
+
+environment:
+
+  sdk: ">=3.2.0 <4.0.0"
+
+
+
+dependencies:
+
+  flutter:
+
+    sdk: flutter
+
+  http: ^1.2.1
+
+  shared_preferences: ^2.2.3
+
+  go_router: ^14.1.4
+
+
+
+flutter:
+
+  uses-material-design: true
+
