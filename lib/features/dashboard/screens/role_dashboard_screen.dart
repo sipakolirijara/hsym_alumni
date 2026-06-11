@@ -4,13 +4,31 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/glass_container.dart';
 import '../../../core/api/auth_service.dart';
 
+// Import our specific role dashboards
+import 'member_dashboard_screen.dart';
+
 class RoleDashboardScreen extends StatelessWidget {
   final String role;
   const RoleDashboardScreen({super.key, required this.role});
 
   @override
   Widget build(BuildContext context) {
-    // Formatting the role slug (e.g., 'vice-president' to 'VICE PRESIDENT')
+    // Intercept the role and route to the strict module
+    switch (role) {
+      case 'member':
+        return const MemberDashboardScreen();
+      
+      // As we build more modules (Treasurer, President, etc.), we add their cases here.
+      // case 'treasurer':
+      //   return const TreasurerDashboardScreen();
+        
+      default:
+        return _buildFallbackDashboard(context);
+    }
+  }
+
+  // Fallback for roles we haven't built dedicated screens for yet
+  Widget _buildFallbackDashboard(BuildContext context) {
     final displayRole = role.replaceAll('-', ' ').toUpperCase();
 
     return Scaffold(
@@ -52,7 +70,7 @@ class RoleDashboardScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Your UI modules and API endpoints are strictly locked to your specific clearance level.',
+                    'Your specific mobile UI is currently under construction.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white70),
                   ),
