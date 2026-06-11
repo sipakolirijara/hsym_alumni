@@ -110,7 +110,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
             GlassContainer(
               child: Column(
                 children: [
-                  Text('Period: ${_periodData?['period_name']}', style: const TextStyle(color: Colors.white70)),
+                  Text('Period: ${_periodData?['period_name']}', style: const TextStyle(color: Colors.black54)),
                   const SizedBox(height: 8),
                   Text('Balance Due: NGN $balance', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppTheme.brandPrimary)),
                 ],
@@ -121,7 +121,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
               TextField(
                 controller: _amountController,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: const InputDecoration(
                   labelText: 'Amount (NGN)',
                   labelStyle: TextStyle(color: Colors.white54),
@@ -133,7 +133,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
               DropdownButtonFormField<String>(
                 value: _selectedMethod,
                 dropdownColor: AppTheme.darkBackground,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: const InputDecoration(
                   labelText: 'Payment Method',
                   labelStyle: TextStyle(color: Colors.white54),
@@ -154,9 +154,9 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Bank: ${_bankDetails!['bank_name']}', style: const TextStyle(color: Colors.white)),
-                      Text('Name: ${_bankDetails!['account_name']}', style: const TextStyle(color: Colors.white)),
-                      Text('Account: ${_bankDetails!['account_number']}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      Text('Bank: ${_bankDetails!['bank_name']}', style: const TextStyle(color: Colors.black87)),
+                      Text('Name: ${_bankDetails!['account_name']}', style: const TextStyle(color: Colors.black87)),
+                      Text('Account: ${_bankDetails!['account_number']}', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -164,7 +164,7 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: _referenceController,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87),
                 decoration: const InputDecoration(
                   labelText: 'Transaction Reference (Optional if proof uploaded)',
                   labelStyle: TextStyle(color: Colors.white54),
@@ -175,8 +175,8 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
               const SizedBox(height: 16),
               OutlinedButton.icon(
                 onPressed: _pickImage,
-                icon: const Icon(Icons.upload_file, color: Colors.white),
-                label: Text(_proofFile == null ? 'Upload Receipt' : 'Receipt Selected', style: const TextStyle(color: Colors.white)),
+                icon: const Icon(Icons.upload_file, color: Colors.black87),
+                label: Text(_proofFile == null ? 'Upload Receipt' : 'Receipt Selected', style: const TextStyle(color: Colors.black87)),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: AppTheme.brandPrimary),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -187,14 +187,14 @@ class _SubmitContributionScreenState extends State<SubmitContributionScreen> {
                 onPressed: _isSubmitting ? null : _submit,
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
                 child: _isSubmitting 
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.black87, strokeWidth: 2))
                     : const Text('Submit Payment', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ] else ...[
               const SizedBox(height: 32),
               const Icon(Icons.check_circle, color: AppTheme.brandPrimary, size: 64),
               const SizedBox(height: 16),
-              const Text('You are fully paid for this period!', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18)),
+              const Text('You are fully paid for this period!', textAlign: TextAlign.center, style: TextStyle(color: Colors.black87, fontSize: 18)),
             ]
           ],
         ),

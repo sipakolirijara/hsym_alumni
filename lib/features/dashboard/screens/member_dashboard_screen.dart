@@ -43,14 +43,14 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Welcome back,', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                const Text('Welcome back,', style: TextStyle(color: Colors.black54, fontSize: 16)),
                 const SizedBox(height: 8),
-                Text(_fullName, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(_fullName, style: const TextStyle(color: Colors.black87, fontSize: 24, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
           const SizedBox(height: 32),
-          const Text('Quick Actions', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text('Quick Actions', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           GridView.count(
             shrinkWrap: true,
@@ -62,6 +62,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
               _buildActionCard(context, icon: Icons.payments_outlined, title: 'Pay Dues', onTap: () => context.push('/submit-contribution')),
               _buildActionCard(context, icon: Icons.history, title: 'History', onTap: () => context.push('/history')),
               _buildActionCard(context, icon: Icons.event, title: 'Events', onTap: () => context.push('/events')),
+              _buildActionCard(context, icon: Icons.photo_library, title: 'Gallery', onTap: () => context.push('/gallery')),
               _buildActionCard(context, icon: Icons.person_outline, title: 'Profile', onTap: () => context.push('/profile')),
             ],
           ),
@@ -80,7 +81,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
           children: [
             Icon(icon, size: 42, color: AppTheme.brandPrimary),
             const SizedBox(height: 16),
-            Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(title, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16)),
           ],
         ),
       ),

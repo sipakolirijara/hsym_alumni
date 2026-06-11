@@ -70,13 +70,13 @@ class RoleDashboardScreen extends StatelessWidget {
                   Text(
                     'Welcome to the $displayRole Workspace',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   const SizedBox(height: 16),
                   const Text(
                     'Your specific mobile UI is currently under construction.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.black54),
                   ),
                 ],
               ),

@@ -50,13 +50,13 @@ class _ContributionHistoryScreenState extends State<ContributionHistoryScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(item['period_name'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                          Text(item['period_name'], style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16)),
                           Text('NGN ${item['amount_due']}', style: const TextStyle(color: AppTheme.brandPrimary, fontWeight: FontWeight.bold)),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text('Status: ${item['payment_status']}', style: const TextStyle(color: Colors.white70)),
-                      Text('Verification: ${item['verification_status'] ?? 'None'}', style: const TextStyle(color: Colors.white70)),
+                      Text('Status: ${item['payment_status']}', style: const TextStyle(color: Colors.black54)),
+                      Text('Verification: ${item['verification_status'] ?? 'None'}', style: const TextStyle(color: Colors.black54)),
                     ],
                   ),
                 ),

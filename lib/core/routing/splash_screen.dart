@@ -59,12 +59,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   SizedBox(height: 24),
                   Text(
                     'GPS Alumni Connect',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   SizedBox(height: 8),
                   Text(
                     'Verifying clearance level...',
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.black54),
                   ),
                   SizedBox(height: 32),
                   CircularProgressIndicator(color: AppTheme.brandPrimary),

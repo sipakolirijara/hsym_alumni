@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text(
                     'Enter your Member ID, Phone, or Email',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.black54),
                   ),
                   const SizedBox(height: 32),
                   TextField(
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? const SizedBox(
                               height: 24,
                               width: 24,
-                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                              child: CircularProgressIndicator(color: Colors.black87, strokeWidth: 2),
                             )
                           : const Text('Secure Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     ),

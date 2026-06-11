@@ -41,10 +41,10 @@ class _EventsScreenState extends State<EventsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(event['event_name'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                      Text(event['event_name'], style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18)),
                       const SizedBox(height: 8),
-                      Text('Date: ${event['event_date']} - ${event['event_time'] ?? ''}', style: const TextStyle(color: Colors.white70)),
-                      Text('Venue: ${event['venue'] ?? 'TBA'}', style: const TextStyle(color: Colors.white70)),
+                      Text('Date: ${event['event_date']} - ${event['event_time'] ?? ''}', style: const TextStyle(color: Colors.black54)),
+                      Text('Venue: ${event['venue'] ?? 'TBA'}', style: const TextStyle(color: Colors.black54)),
                       const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

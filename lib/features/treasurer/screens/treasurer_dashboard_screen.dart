@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/glass_container.dart';
 import '../../../core/api/auth_service.dart';
@@ -18,12 +17,9 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
 
   @override
   void initState() { super.initState(); _fetchData(); }
-
   Future<void> _fetchData() async {
     final result = await TreasurerService.getDashboard();
-    if (mounted && result['success'] == true) {
-      setState(() { _stats = result['data']; _isLoading = false; });
-    }
+    if (mounted && result['success'] == true) setState(() { _stats = result['data']; _isLoading = false; });
   }
 
   @override
@@ -31,15 +27,10 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Treasurer Workspace'), 
-        backgroundColor: AppTheme.darkBackground,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.redAccent),
-            onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); },
-          )
+          IconButton(icon: const Icon(Icons.logout, color: Colors.black87), onPressed: () async { await AuthService.logout(); if (context.mounted) context.go('/login'); })
         ],
       ),
-      backgroundColor: AppTheme.darkBackground,
       body: _isLoading 
         ? const Center(child: CircularProgressIndicator(color: AppTheme.brandPrimary))
         : ListView(
@@ -53,15 +44,26 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              const Text('Financial Actions', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text('Admin Actions', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               GridView.count(
                 shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16,
                 children: [
                   _buildAction(context, Icons.verified, 'Verifications', () => context.push('/treasurer/verifications')),
-                  _buildAction(context, Icons.account_balance_wallet, 'Contributions', () => context.push('/treasurer/contributions')),
-                  _buildAction(context, Icons.bar_chart, 'Reports', () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Reports module coming soon')))),
+                  _buildAction(context, Icons.account_balance_wallet, 'Ledger', () => context.push('/treasurer/contributions')),
+                  _buildAction(context, Icons.photo_library, 'Gallery', () => context.push('/gallery')),
+                ],
+              ),
+              const SizedBox(height: 32),
+              const Text('My Personal Account', style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              GridView.count(
+                shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16,
+                children: [
+                  _buildAction(context, Icons.payments_outlined, 'Pay My Dues', () => context.push('/submit-contribution')),
+                  _buildAction(context, Icons.history, 'My History', () => context.push('/history')),
                 ],
               ),
             ],
@@ -74,10 +76,9 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 32),
-          const SizedBox(height: 8),
-          Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
-          Text(title, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+          Icon(icon, color: color, size: 32), const SizedBox(height: 8),
+          Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87)),
+          Text(title, style: const TextStyle(color: Colors.black54, fontSize: 12)),
         ],
       ),
     );
@@ -90,9 +91,8 @@ class _TreasurerDashboardScreenState extends State<TreasurerDashboardScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: AppTheme.brandPrimary),
-            const SizedBox(height: 12),
-            Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            Icon(icon, size: 40, color: AppTheme.brandPrimary), const SizedBox(height: 12),
+            Text(title, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
           ],
         ),
       ),

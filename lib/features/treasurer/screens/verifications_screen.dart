@@ -30,18 +30,18 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.darkBackground,
-        title: const Text('Verify Payment', style: TextStyle(color: Colors.white)),
+        title: const Text('Verify Payment', style: TextStyle(color: Colors.black87)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Member: ${item['full_name']}', style: const TextStyle(color: Colors.white)),
+            Text('Member: ${item['full_name']}', style: const TextStyle(color: Colors.black87)),
             Text('Amount: NGN ${item['amount']}', style: const TextStyle(color: AppTheme.brandPrimary, fontWeight: FontWeight.bold)),
-            Text('Ref: ${item['transaction_reference'] ?? 'N/A'}', style: const TextStyle(color: Colors.white70)),
+            Text('Ref: ${item['transaction_reference'] ?? 'N/A'}', style: const TextStyle(color: Colors.black54)),
             const SizedBox(height: 16),
             TextField(
               controller: remarksController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black87),
               decoration: const InputDecoration(labelText: 'Remarks (Required for rejection)', labelStyle: TextStyle(color: Colors.white54)),
             ),
           ],
@@ -87,8 +87,8 @@ class _VerificationsScreenState extends State<VerificationsScreen> {
                 child: GlassContainer(
                   child: ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text('${item['full_name']} (${item['member_no']})', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    subtitle: Text('Amount: NGN ${item['amount']}\nPeriod: ${item['period_name']}', style: const TextStyle(color: Colors.white70)),
+                    title: Text('${item['full_name']} (${item['member_no']})', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                    subtitle: Text('Amount: NGN ${item['amount']}\nPeriod: ${item['period_name']}', style: const TextStyle(color: Colors.black54)),
                     trailing: ElevatedButton(
                       onPressed: () => _showVerifyDialog(item),
                       child: const Text('Review'),

@@ -44,7 +44,7 @@ class _ContributionsScreenState extends State<ContributionsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(item['full_name'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          Text(item['full_name'], style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                           Text('NGN ${item['amount_paid']} / ${item['amount_due']}', style: const TextStyle(color: AppTheme.brandPrimary)),
                         ],
                       ),
