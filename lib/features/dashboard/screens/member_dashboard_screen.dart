@@ -102,7 +102,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
                   icon: Icons.payments_outlined,
                   title: 'Pay Dues',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    context.push('/submit-contribution'); //
                       const SnackBar(content: Text('Payment module loading...')),
                     );
                   },
@@ -112,7 +112,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
                   icon: Icons.history,
                   title: 'History',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    context.push('/submit-contribution'); //
                       const SnackBar(content: Text('History module loading...')),
                     );
                   },
@@ -122,7 +122,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
                   icon: Icons.event,
                   title: 'Events',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    context.push('/submit-contribution'); //
                       const SnackBar(content: Text('Events module loading...')),
                     );
                   },
@@ -132,7 +132,7 @@ class _MemberDashboardScreenState extends State<MemberDashboardScreen> {
                   icon: Icons.person_outline,
                   title: 'Profile',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    context.push('/submit-contribution'); //
                       const SnackBar(content: Text('Profile module loading...')),
                     );
                   },
