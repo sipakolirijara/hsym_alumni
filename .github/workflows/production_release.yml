@@ -22,6 +22,40 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Cloud Pre-Build Cleanup (Fix Manifests & Dependencies)
+        run: |
+          # 1. Inject cupertino_icons and material-design if missing
+          python3 -c "
+          import os, re
+          if os.path.exists('pubspec.yaml'):
+              with open('pubspec.yaml', 'r') as f:
+                  content = f.read()
+              if 'cupertino_icons:' not in content:
+                  content = content.replace('dependencies:\n', 'dependencies:\n  cupertino_icons: ^1.0.8\n')
+              if 'uses-material-design: true' not in content:
+                  content = re.sub(r'flutter:\s+', 'flutter:\n  uses-material-design: true\n  ', content)
+              with open('pubspec.yaml', 'w') as f:
+                  f.write(content)
+          "
+
+          # 2. Fix ALL Android Manifests for v2 embedding & AGP 8.0+
+          python3 -c "
+          import os, re, glob
+          manifests = glob.glob('android/app/src/*/AndroidManifest.xml')
+          for manifest in manifests:
+              with open(manifest, 'r') as f:
+                  content = f.read()
+              # Erase the strictly forbidden 'package' attribute
+              content = re.sub(r'\s*package=\"[^\"]+\"', '', content)
+              # Erase old v1 embedding application names
+              content = content.replace('android:name=\"io.flutter.app.FlutterApplication\"', 'android:name=\"\${applicationName}\"')
+              # Guarantee the v2 embedding tag exists
+              if 'flutterEmbedding' not in content and '<application' in content:
+                  content = content.replace('</application>', '    <meta-data android:name=\"flutterEmbedding\" android:value=\"2\" />\n    </application>')
+              with open(manifest, 'w') as f:
+                  f.write(content)
+          "
+
       - name: Add Required Dev Dependencies Safely
         run: |
           flutter pub add --dev flutter_launcher_icons
@@ -30,18 +64,16 @@ jobs:
       - name: Install All Flutter Dependencies
         run: flutter pub get
 
-      - name: Apply Custom Kainuwa App Icon
+      - name: Apply Custom App Icon
         run: dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
 
-      - name: Rename Package to com.kainuwa.alumni
+      - name: Rename Package
         run: dart run change_app_package_name:main com.kainuwa.alumni
 
       - name: Configure Keystore and App Name
         run: |
-          # Move keystore to Android directory
           mv upload-keystore.jks android/app/ || true
           
-          # Create Key Properties file
           cat << EOP > android/key.properties
           storePassword=alumni2026
           keyPassword=alumni2026
@@ -49,7 +81,6 @@ jobs:
           storeFile=upload-keystore.jks
           EOP
           
-          # Safely inject the Signing Config using Python
           python3 -c '
           import os
           build_gradle = "android/app/build.gradle"
@@ -81,7 +112,6 @@ jobs:
                       f.write(content)
           '
           
-          # Rename the App Label to "Alumni HYSM"
           sed -i 's/android:label="[^"]*"/android:label="Alumni HYSM"/g' android/app/src/main/AndroidManifest.xml
 
       - name: Build Signed Production APK
