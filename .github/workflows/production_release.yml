@@ -34,40 +34,36 @@ jobs:
       - name: Apply Custom App Icon
         run: dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
 
-      - name: Rename Package (Causes AGP/v1 issues)
+      - name: Rename Package
         run: dart run change_app_package_name:main com.kainuwa.alumni
 
-      - name: Ironclad Post-Rename Cleanup (The Ultimate Fix)
+      - name: Ironclad Post-Rename Cleanup (Format-Aware)
         run: |
-          # The rename tool breaks the manifests. This Python script on the Ubuntu server fixes them all.
           python3 -c '
           import os, glob, re
-          manifests = glob.glob("android/app/src/*/AndroidManifest.xml")
-          for m in manifests:
-              with open(m, "r") as f:
-                  text = f.read()
-              
-              # 1. Strip the forbidden package attribute
+          
+          # Fix Manifests
+          for m in glob.glob("android/app/src/*/AndroidManifest.xml"):
+              with open(m, "r") as f: text = f.read()
               text = re.sub(r"\s*package=\"[^\"]+\"", "", text)
-              
-              # 2. Erase old v1 embedding application names
               text = text.replace("android:name=\"io.flutter.app.FlutterApplication\"", "android:name=\"${applicationName}\"")
-              
-              # 3. Guarantee the v2 embedding tag exists
               if "flutterEmbedding" not in text and "</application>" in text:
                   text = text.replace("</application>", "    <meta-data android:name=\"flutterEmbedding\" android:value=\"2\" />\n    </application>")
+              text = re.sub(r"android:label=\"[^\"]*\"", "android:label=\"Alumni HYSM\"", text)
+              with open(m, "w") as f: f.write(text)
               
-              with open(m, "w") as f:
-                  f.write(text)
+          # Fix Namespace safely for both Groovy (.gradle) and Kotlin (.kts)
+          for g in ["android/app/build.gradle", "android/app/build.gradle.kts"]:
+              if os.path.exists(g):
+                  with open(g, "r") as f: text = f.read()
+                  if "kts" in g:
+                      text = re.sub(r"namespace\s*=\s*\"[^\"]+\"", "namespace = \"com.kainuwa.alumni\"", text)
+                  else:
+                      text = re.sub(r"namespace\s*\"[^\"]+\"", "namespace \"com.kainuwa.alumni\"", text)
+                  with open(g, "w") as f: f.write(text)
           '
-          
-          # Force the correct namespace in build.gradle
-          sed -i 's/namespace .*/namespace "com.kainuwa.alumni"/g' android/app/build.gradle
-          
-          # Rename the App Label
-          sed -i 's/android:label="[^"]*"/android:label="Alumni HYSM"/g' android/app/src/main/AndroidManifest.xml
 
-      - name: Configure Keystore
+      - name: Configure Keystore (Format-Aware)
         run: |
           mv upload-keystore.jks android/app/ || true
           
@@ -80,33 +76,28 @@ jobs:
           
           python3 -c '
           import os
-          build_gradle = "android/app/build.gradle"
-          if os.path.exists(build_gradle):
-              with open(build_gradle, "r") as f:
-                  content = f.read()
+          groovy = "android/app/build.gradle"
+          kts = "android/app/build.gradle.kts"
+          
+          if os.path.exists(groovy):
+              with open(groovy, "r") as f: content = f.read()
               if "keystoreProperties" not in content:
-                  inject_top = """
-          def keystoreProperties = new Properties()
-          def keystorePropertiesFile = rootProject.file("key.properties")
-          if (keystorePropertiesFile.exists()) {
-              keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-          }
-          """
-                  sign_config = """
-              signingConfigs {
-                  release {
-                      keyAlias = keystoreProperties["keyAlias"]
-                      keyPassword = keystoreProperties["keyPassword"]
-                      storeFile = keystoreProperties["storeFile"] ? file(keystoreProperties["storeFile"]) : null
-                      storePassword = keystoreProperties["storePassword"]
-                  }
-              }
-          """
-                  content = inject_top + content
-                  content = content.replace("buildTypes {", sign_config + "\n    buildTypes {")
+                  head = "def keystoreProperties = new Properties()\ndef keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\n}\n"
+                  config = "signingConfigs {\n        release {\n            keyAlias = keystoreProperties[\"keyAlias\"]\n            keyPassword = keystoreProperties[\"keyPassword\"]\n            storeFile = keystoreProperties[\"storeFile\"] ? file(keystoreProperties[\"storeFile\"]) : null\n            storePassword = keystoreProperties[\"storePassword\"]\n        }\n    }\n    "
+                  content = head + content
+                  content = content.replace("buildTypes {", config + "buildTypes {")
                   content = content.replace("signingConfig signingConfigs.debug", "signingConfig signingConfigs.release")
-                  with open(build_gradle, "w") as f:
-                      f.write(content)
+                  with open(groovy, "w") as f: f.write(content)
+                  
+          elif os.path.exists(kts):
+              with open(kts, "r") as f: content = f.read()
+              if "keystoreProperties" not in content:
+                  head = "val keystoreProperties = java.util.Properties()\nval keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))\n}\n"
+                  config = "signingConfigs {\n        create(\"release\") {\n            keyAlias = keystoreProperties[\"keyAlias\"] as String\n            keyPassword = keystoreProperties[\"keyPassword\"] as String\n            storeFile = file(keystoreProperties[\"storeFile\"] as String)\n            storePassword = keystoreProperties[\"storePassword\"] as String\n        }\n    }\n    "
+                  content = head + content
+                  content = content.replace("buildTypes {", config + "buildTypes {")
+                  content = content.replace("signingConfig = signingConfigs.getByName(\"debug\")", "signingConfig = signingConfigs.getByName(\"release\")")
+                  with open(kts, "w") as f: f.write(content)
           '
 
       - name: Build Signed Production APK
