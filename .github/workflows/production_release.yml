@@ -1,0 +1,98 @@
+name: Production Release (APK & AAB)
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: Apply Custom Kainuwa App Icon
+        run: flutter pub run flutter_launcher_icons
+
+      - name: Rename Package to com.kainuwa.alumni
+        run: flutter pub run change_app_package_name:main com.kainuwa.alumni
+
+      - name: Configure Keystore and App Name
+        run: |
+          # Move keystore to Android directory
+          mv upload-keystore.jks android/app/ || true
+          
+          # Create Key Properties file
+          cat << EOP > android/key.properties
+          storePassword=alumni2026
+          keyPassword=alumni2026
+          keyAlias=upload
+          storeFile=upload-keystore.jks
+          EOP
+          
+          # Safely inject the Signing Config using Python
+          python3 -c '
+          import os
+          build_gradle = "android/app/build.gradle"
+          if os.path.exists(build_gradle):
+              with open(build_gradle, "r") as f:
+                  content = f.read()
+              if "keystoreProperties" not in content:
+                  inject_top = """
+          def keystoreProperties = new Properties()
+          def keystorePropertiesFile = rootProject.file("key.properties")
+          if (keystorePropertiesFile.exists()) {
+              keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+          }
+          """
+                  sign_config = """
+              signingConfigs {
+                  release {
+                      keyAlias = keystoreProperties["keyAlias"]
+                      keyPassword = keystoreProperties["keyPassword"]
+                      storeFile = keystoreProperties["storeFile"] ? file(keystoreProperties["storeFile"]) : null
+                      storePassword = keystoreProperties["storePassword"]
+                  }
+              }
+          """
+                  content = inject_top + content
+                  content = content.replace("buildTypes {", sign_config + "\n    buildTypes {")
+                  content = content.replace("signingConfig signingConfigs.debug", "signingConfig signingConfigs.release")
+                  with open(build_gradle, "w") as f:
+                      f.write(content)
+          '
+          
+          # Rename the App Label to "Alumni HYSM"
+          sed -i 's/android:label="[^"]*"/android:label="Alumni HYSM"/g' android/app/src/main/AndroidManifest.xml
+
+      - name: Build Signed Production APK
+        run: flutter build apk --release
+
+      - name: Build Signed Play Store AAB
+        run: flutter build appbundle --release
+
+      - name: Upload APK for Direct Download
+        uses: actions/upload-artifact@v3
+        with:
+          name: Alumni_HYSM_Release_APK
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload AAB for Google Play Store
+        uses: actions/upload-artifact@v3
+        with:
+          name: Alumni_HYSM_PlayStore_AAB
+          path: build/app/outputs/bundle/release/app-release.aab
