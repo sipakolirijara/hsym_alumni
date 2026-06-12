@@ -14,6 +14,8 @@ class AlumniApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'AMS Alumni',
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
     );

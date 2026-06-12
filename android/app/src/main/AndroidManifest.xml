@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="hsym_alumni"
+        android:label="Alumni HYSM"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

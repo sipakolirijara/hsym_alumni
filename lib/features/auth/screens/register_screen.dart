@@ -3,33 +3,38 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/api/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _identifierController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _fnCtrl = TextEditingController();
+  final _lnCtrl = TextEditingController();
+  final _phCtrl = TextEditingController();
+  final _pwCtrl = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  Future<void> _handleLogin() async {
+  Future<void> _handleRegister() async {
     FocusScope.of(context).unfocus();
-    if (_identifierController.text.isEmpty || _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
+    if (_fnCtrl.text.isEmpty || _lnCtrl.text.isEmpty || _phCtrl.text.isEmpty || _pwCtrl.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill all required fields')));
       return;
     }
     setState(() => _isLoading = true);
-    final result = await AuthService.login(_identifierController.text.trim(), _passwordController.text);
+    final result = await AuthService.register({
+      'first_name': _fnCtrl.text.trim(), 'last_name': _lnCtrl.text.trim(),
+      'phone': _phCtrl.text.trim(), 'password': _pwCtrl.text,
+    });
     setState(() => _isLoading = false);
     
     if (result['success'] == true && mounted) {
-      final role = await AuthService.getUserRole();
-      context.go('/dashboard/${role ?? 'member'}');
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration successful. Pending admin approval.'), backgroundColor: Colors.green));
+      context.pop();
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result['message'] ?? 'Login failed'), backgroundColor: Colors.redAccent));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result['message'] ?? 'Registration failed'), backgroundColor: Colors.redAccent));
     }
   }
 
@@ -76,43 +81,34 @@ class _LoginScreenState extends State<LoginScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: isDark ? AppTheme.darkBackgroundColor : Colors.white,
+      appBar: AppBar(leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop())),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(Icons.school, size: 60, color: AppTheme.primaryColor),
-              const SizedBox(height: 20),
-              Text('Welcome Back', textAlign: TextAlign.center, style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black)),
+              Text('Join Alumni HYSM', textAlign: TextAlign.center, style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black)),
               const SizedBox(height: 8),
-              Text('Sign in to continue to Alumni HYSM', textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.grey.shade500)),
-              const SizedBox(height: 50),
+              Text('Create an account to stay connected', textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.grey.shade500)),
+              const SizedBox(height: 40),
               
-              _buildCustomInput(icon: Icons.person_rounded, label: 'Member ID, Phone, or Email', controller: _identifierController, isDark: isDark),
-              const SizedBox(height: 30),
-              _buildCustomInput(icon: Icons.lock_rounded, label: 'Password', controller: _passwordController, isDark: isDark, isPassword: true),
+              _buildCustomInput(icon: Icons.person_rounded, label: 'First Name', controller: _fnCtrl, isDark: isDark),
+              const SizedBox(height: 24),
+              _buildCustomInput(icon: Icons.person_rounded, label: 'Last Name', controller: _lnCtrl, isDark: isDark),
+              const SizedBox(height: 24),
+              _buildCustomInput(icon: Icons.phone_rounded, label: 'Phone Number', controller: _phCtrl, isDark: isDark),
+              const SizedBox(height: 24),
+              _buildCustomInput(icon: Icons.lock_rounded, label: 'Password (min 6 chars)', controller: _pwCtrl, isDark: isDark, isPassword: true),
               const SizedBox(height: 40),
               
               SizedBox(
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleLogin,
+                  onPressed: _isLoading ? null : _handleRegister,
                   style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), elevation: 0),
-                  child: _isLoading ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Sign In', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  child: _isLoading ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Complete Registration', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
-              ),
-              const SizedBox(height: 40),
-              
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Don't have an account?", style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade700, fontWeight: FontWeight.w600, fontSize: 14)),
-                  TextButton(
-                    onPressed: () => context.push('/register'),
-                    child: const Text('Register Here', style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold, fontSize: 15)),
-                  ),
-                ],
               ),
             ],
           ),

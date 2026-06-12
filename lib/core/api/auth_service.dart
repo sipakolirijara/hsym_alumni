@@ -6,6 +6,16 @@ class AuthService {
   // Production API URL configured for cPanel backend
   static const String baseUrl = 'https://alumni.recordly.ng/api';
 
+  static Future<Map<String, dynamic>> register(Map<String, String> data) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${AuthService.baseUrl}/register.php"),
+        body: data,
+      );
+      return jsonDecode(response.body);
+    } catch (e) { return {"success": false, "message": "Network Error"}; }
+  }
+
   static Future<Map<String, dynamic>> login(String identifier, String password) async {
     try {
       final response = await http.post(

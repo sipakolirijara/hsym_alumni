@@ -17,6 +17,7 @@ import '../../features/pro/screens/manage_announcements_screen.dart';
 import '../../features/announcements/screens/announcements_screen.dart';
 import '../../features/finsec/screens/finsec_dashboard_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
+import '../../features/auth/screens/register_screen.dart';
 import 'splash_screen.dart';
 
 class AppRouter {
@@ -25,6 +26,7 @@ class AppRouter {
     routes: [
       GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
       GoRoute(path: '/dashboard/:role', builder: (context, state) => RoleDashboardScreen(role: state.pathParameters['role'] ?? 'member')),
       GoRoute(path: '/submit-contribution', builder: (context, state) => const SubmitContributionScreen()),
       GoRoute(path: '/history', builder: (context, state) => const ContributionHistoryScreen()),
