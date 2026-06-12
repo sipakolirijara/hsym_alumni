@@ -22,14 +22,19 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install Flutter Dependencies
+      - name: Add Required Dev Dependencies Safely
+        run: |
+          flutter pub add --dev flutter_launcher_icons
+          flutter pub add --dev change_app_package_name
+
+      - name: Install All Flutter Dependencies
         run: flutter pub get
 
       - name: Apply Custom Kainuwa App Icon
-        run: flutter pub run flutter_launcher_icons
+        run: dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
 
       - name: Rename Package to com.kainuwa.alumni
-        run: flutter pub run change_app_package_name:main com.kainuwa.alumni
+        run: dart run change_app_package_name:main com.kainuwa.alumni
 
       - name: Configure Keystore and App Name
         run: |
