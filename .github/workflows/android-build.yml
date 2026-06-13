@@ -35,62 +35,45 @@ jobs:
           flutter pub add --dev flutter_launcher_icons
           dart run flutter_launcher_icons || true
 
-      - name: Configure Production Keystore (Format-Aware)
-        run: |
-          cp upload-keystore.jks android/app/ || true
-          
-          cat << EOP > android/key.properties
-          storePassword=alumni2026
-          keyPassword=alumni2026
-          keyAlias=upload
-          storeFile=upload-keystore.jks
-          EOP
-          
-          python3 -c '
-          import os
-          groovy = "android/app/build.gradle"
-          kts = "android/app/build.gradle.kts"
-          
-          if os.path.exists(groovy):
-              with open(groovy, "r") as f: content = f.read()
-              if "keystoreProperties" not in content:
-                  head = "def keystoreProperties = new Properties()\ndef keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\n}\n"
-                  config = "signingConfigs {\n        release {\n            keyAlias = keystoreProperties[\"keyAlias\"]\n            keyPassword = keystoreProperties[\"keyPassword\"]\n            storeFile = keystoreProperties[\"storeFile\"] ? file(keystoreProperties[\"storeFile\"]) : null\n            storePassword = keystoreProperties[\"storePassword\"]\n        }\n    }\n    "
-                  content = head + content
-                  content = content.replace("buildTypes {", config + "buildTypes {")
-                  content = content.replace("signingConfig signingConfigs.debug", "signingConfig signingConfigs.release")
-                  content = content.replace("signingConfig = signingConfigs.debug", "signingConfig = signingConfigs.release")
-                  with open(groovy, "w") as f: f.write(content)
-                  
-          elif os.path.exists(kts):
-              with open(kts, "r") as f: content = f.read()
-              if "keystoreProperties" not in content:
-                  imports = "import java.util.Properties\nimport java.io.FileInputStream\n"
-                  head = "val keystoreProperties = Properties()\nval keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(FileInputStream(keystorePropertiesFile))\n}\n"
-                  config = "    signingConfigs {\n        create(\"release\") {\n            keyAlias = keystoreProperties.getProperty(\"keyAlias\")\n            keyPassword = keystoreProperties.getProperty(\"keyPassword\")\n            storeFile = file(keystoreProperties.getProperty(\"storeFile\"))\n            storePassword = keystoreProperties.getProperty(\"storePassword\")\n        }\n    }\n"
-                  
-                  content = imports + content
-                  content = content.replace("android {", head + "\nandroid {")
-                  content = content.replace("buildTypes {", config + "buildTypes {")
-                  content = content.replace("signingConfig = signingConfigs.getByName(\"debug\")", "signingConfig = signingConfigs.getByName(\"release\")")
-                  with open(kts, "w") as f: f.write(content)
-          '
-
-      - name: Build Production Artifacts
+      - name: Build Unsigned Artifacts
         run: |
           flutter build apk --release
           flutter build appbundle --release
 
-      - name: Verify APK Signature Fingerprint
+      - name: Forcefully Sign APK and AAB with Production Keystore
         run: |
-          echo "=== AUDIT: EXTRACTING APK SHA-1 ==="
-          keytool -printcert -jarfile build/app/outputs/flutter-apk/app-release.apk | grep -i "SHA" || true
+          # Locate the Android SDK Build Tools natively on the cloud runner
+          BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | tail -1)
+          
+          echo "=== STRIPPING DEFAULT SIGNATURE ==="
+          zip -d build/app/outputs/flutter-apk/app-release.apk META-INF/\* || true
+          
+          echo "=== ALIGNING APK ==="
+          $BUILD_TOOLS/zipalign -v 4 build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-release-aligned.apk
+          
+          echo "=== SIGNING APK WITH UPLOAD-KEYSTORE.JKS ==="
+          $BUILD_TOOLS/apksigner sign --ks upload-keystore.jks \
+            --ks-key-alias upload \
+            --ks-pass pass:alumni2026 \
+            --key-pass pass:alumni2026 \
+            --out build/app/outputs/flutter-apk/Alumni_HYSM_Production.apk \
+            build/app/outputs/flutter-apk/app-release-aligned.apk
+            
+          echo "=== SIGNING AAB WITH UPLOAD-KEYSTORE.JKS ==="
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore upload-keystore.jks \
+            -storepass alumni2026 \
+            -keypass alumni2026 \
+            build/app/outputs/bundle/release/app-release.aab upload
+            
+          echo "=== FINAL APK SIGNATURE AUDIT ==="
+          $BUILD_TOOLS/apksigner verify --print-certs build/app/outputs/flutter-apk/Alumni_HYSM_Production.apk | grep -i "SHA-1" || true
 
-      - name: Upload APK
+      - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
           name: Alumni_HYSM_APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/Alumni_HYSM_Production.apk
 
       - name: Upload AAB
         uses: actions/upload-artifact@v4
