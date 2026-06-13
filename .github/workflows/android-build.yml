@@ -65,9 +65,12 @@ jobs:
           elif os.path.exists(kts):
               with open(kts, "r") as f: content = f.read()
               if "keystoreProperties" not in content:
-                  head = "val keystoreProperties = java.util.Properties()\nval keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))\n}\n"
+                  imports = "import java.util.Properties\nimport java.io.FileInputStream\n"
+                  head = "val keystoreProperties = Properties()\nval keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(FileInputStream(keystorePropertiesFile))\n}\n"
                   config = "    signingConfigs {\n        create(\"release\") {\n            keyAlias = keystoreProperties.getProperty(\"keyAlias\")\n            keyPassword = keystoreProperties.getProperty(\"keyPassword\")\n            storeFile = file(keystoreProperties.getProperty(\"storeFile\"))\n            storePassword = keystoreProperties.getProperty(\"storePassword\")\n        }\n    }\n"
-                  content = head + content
+                  
+                  content = imports + content
+                  content = content.replace("android {", head + "\nandroid {")
                   content = content.replace("buildTypes {", config + "buildTypes {")
                   content = content.replace("signingConfig = signingConfigs.getByName(\"debug\")", "signingConfig = signingConfigs.getByName(\"release\")")
                   with open(kts, "w") as f: f.write(content)
