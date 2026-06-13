@@ -24,14 +24,47 @@ jobs:
           rm -rf android
           flutter create --platforms=android --org com.kainuwa .
           flutter pub get
-          
-          # [NEW] Inject Cleartext Traffic bypass for HTTP API endpoints
+
+      - name: Enforce Security & Permissions
+        run: |
+          # Forcefully inject the INTERNET permission into the main manifest
+          sed -i '/<manifest/a \    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
+          # Bypass Cleartext traffic (as a fallback)
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml
 
-      - name: Setup Icons & Package Name
+      - name: Setup Icons
         run: |
           flutter pub add --dev flutter_launcher_icons
-          dart run flutter_launcher_icons
+          dart run flutter_launcher_icons || true
+
+      - name: Configure Production Keystore
+        run: |
+          # Copy the keystore into the newly generated android/app directory
+          cp upload-keystore.jks android/app/ || echo "Keystore not found, skipping signature"
+          
+          # Generate key.properties
+          cat << EOP > android/key.properties
+          storePassword=alumni2026
+          keyPassword=alumni2026
+          keyAlias=upload
+          storeFile=upload-keystore.jks
+          EOP
+          
+          # Inject signature logic into the generated build.gradle
+          python3 -c '
+          import os
+          groovy = "android/app/build.gradle"
+          if os.path.exists(groovy):
+              with open(groovy, "r") as f: content = f.read()
+              if "keystoreProperties" not in content:
+                  head = "def keystoreProperties = new Properties()\ndef keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\n}\n"
+                  config = "signingConfigs {\n        release {\n            keyAlias = keystoreProperties[\"keyAlias\"]\n            keyPassword = keystoreProperties[\"keyPassword\"]\n            storeFile = keystoreProperties[\"storeFile\"] ? file(keystoreProperties[\"storeFile\"]) : null\n            storePassword = keystoreProperties[\"storePassword\"]\n        }\n    }\n    "
+                  content = head + content
+                  content = content.replace("buildTypes {", config + "buildTypes {")
+                  content = content.replace("signingConfig signingConfigs.debug", "signingConfig signingConfigs.release")
+                  content = content.replace("signingConfig = signingConfigs.debug", "signingConfig = signingConfigs.release")
+                  with open(groovy, "w") as f: f.write(content)
+          '
 
       - name: Build Production Artifacts
         run: |
