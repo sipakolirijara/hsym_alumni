@@ -70,4 +70,21 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('role_slug');
   }
+
+  static Future<Map<String, dynamic>> googleLogin(String idToken) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth.php?action=google_login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'id_token': idToken}),
+      );
+      final data = jsonDecode(response.body);
+      if (data['success'] == true) {
+        // Handle session if needed, typically SharedPreferences
+      }
+      return data;
+    } catch (e) {
+      return {'success': false, 'message': 'Network error occurred: $e'};
+    }
+  }
 }
