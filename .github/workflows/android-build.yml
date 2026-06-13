@@ -27,9 +27,7 @@ jobs:
 
       - name: Enforce Security & Permissions
         run: |
-          # Forcefully inject the INTERNET permission into the main manifest
           sed -i '/<manifest/a \    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
-          # Bypass Cleartext traffic (as a fallback)
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml
 
       - name: Setup Icons
@@ -37,12 +35,10 @@ jobs:
           flutter pub add --dev flutter_launcher_icons
           dart run flutter_launcher_icons || true
 
-      - name: Configure Production Keystore
+      - name: Configure Production Keystore (Format-Aware)
         run: |
-          # Copy the keystore into the newly generated android/app directory
-          cp upload-keystore.jks android/app/ || echo "Keystore not found, skipping signature"
+          cp upload-keystore.jks android/app/ || true
           
-          # Generate key.properties
           cat << EOP > android/key.properties
           storePassword=alumni2026
           keyPassword=alumni2026
@@ -50,10 +46,11 @@ jobs:
           storeFile=upload-keystore.jks
           EOP
           
-          # Inject signature logic into the generated build.gradle
           python3 -c '
           import os
           groovy = "android/app/build.gradle"
+          kts = "android/app/build.gradle.kts"
+          
           if os.path.exists(groovy):
               with open(groovy, "r") as f: content = f.read()
               if "keystoreProperties" not in content:
@@ -64,12 +61,27 @@ jobs:
                   content = content.replace("signingConfig signingConfigs.debug", "signingConfig signingConfigs.release")
                   content = content.replace("signingConfig = signingConfigs.debug", "signingConfig = signingConfigs.release")
                   with open(groovy, "w") as f: f.write(content)
+                  
+          elif os.path.exists(kts):
+              with open(kts, "r") as f: content = f.read()
+              if "keystoreProperties" not in content:
+                  head = "val keystoreProperties = java.util.Properties()\nval keystorePropertiesFile = rootProject.file(\"key.properties\")\nif (keystorePropertiesFile.exists()) {\n    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))\n}\n"
+                  config = "    signingConfigs {\n        create(\"release\") {\n            keyAlias = keystoreProperties.getProperty(\"keyAlias\")\n            keyPassword = keystoreProperties.getProperty(\"keyPassword\")\n            storeFile = file(keystoreProperties.getProperty(\"storeFile\"))\n            storePassword = keystoreProperties.getProperty(\"storePassword\")\n        }\n    }\n"
+                  content = head + content
+                  content = content.replace("buildTypes {", config + "buildTypes {")
+                  content = content.replace("signingConfig = signingConfigs.getByName(\"debug\")", "signingConfig = signingConfigs.getByName(\"release\")")
+                  with open(kts, "w") as f: f.write(content)
           '
 
       - name: Build Production Artifacts
         run: |
           flutter build apk --release
           flutter build appbundle --release
+
+      - name: Verify APK Signature Fingerprint
+        run: |
+          echo "=== AUDIT: EXTRACTING APK SHA-1 ==="
+          keytool -printcert -jarfile build/app/outputs/flutter-apk/app-release.apk | grep SHA1
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
