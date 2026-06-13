@@ -24,6 +24,9 @@ jobs:
           rm -rf android
           flutter create --platforms=android --org com.kainuwa .
           flutter pub get
+          
+          # [NEW] Inject Cleartext Traffic bypass for HTTP API endpoints
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml
 
       - name: Setup Icons & Package Name
         run: |
