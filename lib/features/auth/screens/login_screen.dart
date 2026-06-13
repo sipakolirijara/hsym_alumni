@@ -81,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final GoogleSignIn googleSignIn = GoogleSignIn(
 
+        clientId: '247109397193-cacendm12kjh4ji3fl8blgp5jn4efpm6.apps.googleusercontent.com',
         serverClientId: '247109397193-cacendm12kjh4ji3fl8blgp5jn4efpm6.apps.googleusercontent.com', 
 
       );
